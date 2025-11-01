@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Icon from "@/components/ui/icon";
 import { toast } from "sonner";
 
-type BlockType = "redstone" | "repeater" | "torch" | "block" | "lever" | "button" | null;
+type BlockType = "redstone" | "repeater" | "torch" | "block" | "lever" | "button" | "piston" | "sticky_piston" | "observer" | "comparator" | "redstone_lamp" | "hopper" | "dispenser" | "dropper" | null;
 
 interface GridCell {
   type: BlockType;
@@ -21,13 +21,21 @@ const Index = () => {
   );
   const [selectedTool, setSelectedTool] = useState<BlockType>("redstone");
 
-  const tools: { type: BlockType; icon: string; label: string }[] = [
-    { type: "redstone", icon: "Zap", label: "Провод" },
-    { type: "repeater", icon: "ArrowRight", label: "Повторитель" },
-    { type: "torch", icon: "Flame", label: "Факел" },
-    { type: "block", icon: "Square", label: "Блок" },
-    { type: "lever", icon: "ToggleLeft", label: "Рычаг" },
-    { type: "button", icon: "Circle", label: "Кнопка" },
+  const tools: { type: BlockType; icon: string; label: string; color: string }[] = [
+    { type: "redstone", icon: "Zap", label: "Провод", color: "#8B0000" },
+    { type: "repeater", icon: "ArrowRight", label: "Повторитель", color: "#696969" },
+    { type: "comparator", icon: "GitCompare", label: "Компаратор", color: "#A9A9A9" },
+    { type: "torch", icon: "Flame", label: "Факел", color: "#FF6347" },
+    { type: "redstone_lamp", icon: "Lightbulb", label: "Лампа", color: "#FFD700" },
+    { type: "piston", icon: "Box", label: "Поршень", color: "#8B7355" },
+    { type: "sticky_piston", icon: "Package", label: "Липкий поршень", color: "#6B8E23" },
+    { type: "observer", icon: "Eye", label: "Наблюдатель", color: "#4A4A4A" },
+    { type: "lever", icon: "ToggleLeft", label: "Рычаг", color: "#8B4513" },
+    { type: "button", icon: "Circle", label: "Кнопка", color: "#A0522D" },
+    { type: "hopper", icon: "Container", label: "Воронка", color: "#2F4F4F" },
+    { type: "dispenser", icon: "Archive", label: "Раздатчик", color: "#708090" },
+    { type: "dropper", icon: "Download", label: "Выбрасыватель", color: "#778899" },
+    { type: "block", icon: "Square", label: "Блок", color: "#808080" },
   ];
 
   const handleCellClick = (row: number, col: number) => {
@@ -71,15 +79,43 @@ const Index = () => {
     toast.info("Сетка очищена");
   };
 
-  const getBlockColor = (type: BlockType) => {
+  const getBlockStyle = (type: BlockType): React.CSSProperties => {
+    const baseStyle = {
+      position: 'relative' as const,
+      boxShadow: 'inset -2px -2px 4px rgba(0,0,0,0.3), inset 2px 2px 4px rgba(255,255,255,0.2)',
+    };
+
     switch (type) {
-      case "redstone": return "bg-red-600 border-red-800";
-      case "repeater": return "bg-stone-600 border-stone-800";
-      case "torch": return "bg-orange-600 border-orange-800";
-      case "block": return "bg-stone-500 border-stone-700";
-      case "lever": return "bg-amber-700 border-amber-900";
-      case "button": return "bg-stone-400 border-stone-600";
-      default: return "bg-stone-900/50 border-stone-800";
+      case "redstone": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #DC143C 0%, #8B0000 100%)', border: '2px solid #450000' };
+      case "repeater": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #808080 0%, #505050 100%)', border: '2px solid #303030' };
+      case "comparator": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #A9A9A9 0%, #696969 100%)', border: '2px solid #404040' };
+      case "torch": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #FF6347 0%, #CD5C5C 100%)', border: '2px solid #8B3A3A' };
+      case "redstone_lamp": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #FFD700 0%, #DAA520 100%)', border: '2px solid #B8860B' };
+      case "piston": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #A0826D 0%, #6B5D52 100%)', border: '2px solid #4A3F37' };
+      case "sticky_piston": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #7CB342 0%, #558B2F 100%)', border: '2px solid #33691E' };
+      case "observer": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #616161 0%, #424242 100%)', border: '2px solid #212121' };
+      case "lever": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #A0522D 0%, #8B4513 100%)', border: '2px solid #654321' };
+      case "button": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #A9A9A9 0%, #808080 100%)', border: '2px solid #505050' };
+      case "hopper": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #3E4E50 0%, #2C3E40 100%)', border: '2px solid #1C2E30' };
+      case "dispenser": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #708090 0%, #556370 100%)', border: '2px solid #3A4350' };
+      case "dropper": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #778899 0%, #5D6D79 100%)', border: '2px solid #3D4D59' };
+      case "block": 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #A9A9A9 0%, #808080 100%)', border: '2px solid #505050' };
+      default: 
+        return { ...baseStyle, background: 'linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%)', border: '2px solid #A5D6A7' };
     }
   };
 
@@ -111,17 +147,18 @@ const Index = () => {
             <Card className="p-4 md:p-6 border-2 border-border bg-card">
               <div className="mb-6">
                 <h2 className="text-xl font-bold mb-4 text-primary">Инструменты</h2>
-                <div className="grid grid-cols-3 md:flex md:flex-wrap gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap gap-2">
                   {tools.map((tool) => (
                     <Button
                       key={tool.type}
                       onClick={() => setSelectedTool(tool.type)}
                       variant={selectedTool === tool.type ? "default" : "outline"}
-                      className="border-2"
-                      size="lg"
+                      className="border-2 text-xs sm:text-sm"
+                      size="sm"
+                      style={selectedTool === tool.type ? { backgroundColor: tool.color, borderColor: tool.color } : {}}
                     >
-                      <Icon name={tool.icon} size={20} className="mr-2" />
-                      <span className="hidden md:inline">{tool.label}</span>
+                      <Icon name={tool.icon} size={16} className="mr-1" />
+                      <span className="truncate">{tool.label}</span>
                     </Button>
                   ))}
                   <Button
@@ -136,16 +173,17 @@ const Index = () => {
                 </div>
               </div>
 
-              <div className="mb-6 overflow-x-auto">
-                <div className="inline-block border-4 border-border bg-stone-950 p-1">
-                  <div className="grid gap-[2px]" style={{ gridTemplateColumns: `repeat(16, minmax(0, 1fr))` }}>
+              <div className="mb-6 overflow-x-auto flex justify-center">
+                <div className="inline-block border-4 border-stone-600 p-1" style={{ background: 'linear-gradient(135deg, #C8E6C9 0%, #A5D6A7 100%)' }}>
+                  <div className="grid gap-[1px]" style={{ gridTemplateColumns: `repeat(16, minmax(0, 1fr))` }}>
                     {grid.map((row, rowIndex) =>
                       row.map((cell, colIndex) => (
                         <button
                           key={`${rowIndex}-${colIndex}`}
                           onClick={() => handleCellClick(rowIndex, colIndex)}
-                          className={`w-6 h-6 md:w-8 md:h-8 border-2 transition-all hover:scale-110 ${getBlockColor(cell.type)}`}
-                          title={cell.type || "Пусто"}
+                          className="w-6 h-6 md:w-10 md:h-10 transition-all hover:scale-105 active:scale-95"
+                          style={getBlockStyle(cell.type)}
+                          title={cell.type || "Трава"}
                         />
                       ))
                     )}
